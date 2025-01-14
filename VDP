@@ -1,0 +1,43 @@
+close all;
+clear;
+
+opts = odeset('AbsTol',1e-8,'RelTol',1e-6);
+
+% mu = 1;
+
+%[t,y] = ode45(@(t,y) vdp1(t,y,mu), [0,200], [10; 10], opts);
+
+%plot(t,y(:,1), '-r');
+%hold on; plot(t,y(:,2), '--b')
+
+% function [output] = vdp1(t,y,mu)
+% 
+%     dy_1 = y(2,1);
+%     dy_2 = mu * (1 - y(1,1)^2) * y(2,1) - y(1,1);
+% 
+%     output = [dy_1; dy_2];
+% 
+% end
+
+t = 0;
+A = [];
+for mu = -2:0.01:2
+
+    [x, fval, exitf, output, J] = fsolve(@(y)vdp1(t,y,mu),[2;0]);
+    
+    A = [A; mu, max(real(eig(J)))];
+
+end
+
+%plot(A(:,1), A(:,2), '-m')
+
+mu = -0.01;
+
+[t,y] = ode45(@(t,y) vdp1(t,y,mu), [0,2000], [2; 0], opts);
+
+figure(1)
+plot(t,y(:,1), '-r');
+hold on; plot(t,y(:,2), '-b')
+
+figure(2)
+plot(y(:,1), y(:,2), '-r');
